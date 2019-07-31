@@ -24,7 +24,6 @@ export interface StateMachineProviderChange<TContext, TStateSchema extends State
     stateHash: string;
 }
 
-
 @Component
 export default class XState<TContext, TStateSchema extends StateSchema, TEvents extends EventObject> extends Vue {
     @Prop()
