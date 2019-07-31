@@ -5,11 +5,25 @@
   "homepage": "https://github.com/asbermudez/vue-xstate",
   "license": "MIT",
   "repository": "https://github.com/asbermudez/vue-xstate",
+  "description": "xState implementation for VueJS as Mixin",
+  "keywords": [
+    "xstate",
+    "state machine",
+    "vue",
+    "vuejs",
+    "mixin",
+    "mixins"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "prepare": "npm run build",
     "build": "tsc -p tsconfig.json",
     "lint": "vue-cli-service lint",
-    "test": "vue-cli-service test:unit"
+    "test": "vue-cli-service test:unit",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags"
   },
   "files": [
     "lib/**/*"
