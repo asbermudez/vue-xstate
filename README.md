@@ -34,19 +34,19 @@ import { MachineConfig, MachineOptions, StateNodeConfig } from 'xstate';
 import { assign } from 'xstate/lib/actions';
 
 // State machine context interface
-export interface TrafficLigthContext {
+export interface TrafficLightContext {
     carCount: number,
     finedPlates: string[]
 }
 
 // Initial context used in the xStateInit() method
-export const TrafficLigtInitialContext: TrafficLigthContext = {
+export const TrafficLigtInitialContext: TrafficLightContext = {
     carCount: 0,
     finedPlates: []
 };
 
 // Possible states of the machine
-export enum TrafficLigtStates {
+export enum TrafficLightStates {
   RED = 'RED',
   AMBER = 'AMBER',
   GREEN = 'GREEN'
@@ -132,10 +132,10 @@ import XStateMixin from 'vue-xstate';
 import { Mixin } from 'vue-property-decorator';
 // or if you're only using vue-class-component 
 // import { mixins } from 'vue-class-component'';
-import { TrafficLigthContext, TrafficLigthStateSchema, TrafficLigthEvents } from './TrafficLigth.machine.ts';
+import { TrafficLightContext, TrafficLightStateSchema, TrafficLightEvents } from './TrafficLight.machine.ts';
 
 @Component
-class TrafficLigth extends Mixin<XStateMixin<TrafficLigthContext, TrafficLigthStateSchema, TrafficLigthEvents>>(XStateMixin) {
+class TrafficLight extends Mixin<XStateMixin<TrafficLightContext, TrafficLightStateSchema, TrafficLightEvents>>(XStateMixin) {
     // Your class definition
 }
 ```
