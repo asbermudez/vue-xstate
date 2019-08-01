@@ -35,7 +35,7 @@ export default class XState<TContext, TStateSchema extends StateSchema, TEvents 
 
     private $xStateStateMachine!: StateNode<TContext, TStateSchema, TEvents>;
     private $xStateInterpreter!: Interpreter<TContext, TStateSchema, TEvents>;
-    private $xStateSubscription: Subscription | null = null;
+    private $xStateSubscription!: Subscription | null;
 
     public xStateInit(
         initialContext: TContext,

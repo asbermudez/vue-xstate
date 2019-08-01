@@ -10,7 +10,7 @@
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint"
+    "preversion": "npm run lint && npm run build"
   },
   "main": "lib/index.js",
   "files": [
