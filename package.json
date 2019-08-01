@@ -5,6 +5,7 @@
   "author": "Aram Sabatés Bermúdez",
   "scripts": {
     "build": "tsc -p tsconfig.prod.json && uglifyjs --compress --mangle --output lib/index.js  -- lib/index.js",
+    "buildCommit": "git add -A && git commit -m \"Version increase build\"",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postversion": "git push && git push --tags",
