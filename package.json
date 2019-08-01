@@ -4,7 +4,7 @@
   "description": "xState implementation for VueJS as Mixin",
   "author": "Aram Sabatés Bermúdez",
   "scripts": {
-    "build": "tsc -p tsconfig.prod.json",
+    "build": "tsc -p tsconfig.prod.json && uglifyjs --compress --mangle --output lib/index.js  -- lib/index.js",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postversion": "git push && git push --tags",
@@ -36,6 +36,7 @@
     "ts-jest": "^23.0.0",
     "tsc": "^1.20150623.0",
     "typescript": "^3.4.3",
+    "uglify-es": "^3.3.9",
     "vue-template-compiler": "^2.6.10"
   },
   "homepage": "https://github.com/asbermudez/vue-xstate",
