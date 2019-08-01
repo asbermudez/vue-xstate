@@ -132,10 +132,10 @@ import XStateMixin from 'vue-xstate';
 import { Mixin } from 'vue-property-decorator';
 // or if you're only using vue-class-component 
 // import { mixins } from 'vue-class-component'';
-import { TrafficLigtContext, TrafficLigtStateSchema, TrafficLigtEvents } from './TrafficLigt.machine.ts';
+import { TrafficLigthContext, TrafficLigthStateSchema, TrafficLigthEvents } from './TrafficLigth.machine.ts';
 
 @Component
-class TrafficLigt extends Mixin<XStateMixin<TrafficLigtContext, TrafficLigtStateSchema, TrafficLigtEvents>>(XStateMixin) {
+class TrafficLigth extends Mixin<XStateMixin<TrafficLigthContext, TrafficLigthStateSchema, TrafficLigthEvents>>(XStateMixin) {
     // Your class definition
 }
 ```
