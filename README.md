@@ -197,7 +197,7 @@ yarn install
 yarn run build
 ```
 
-### Run your unit tests
+### Run unit tests
 ```
 yarn run test
 ```
