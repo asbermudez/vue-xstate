@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/vue-xstate.svg)](https://badge.fury.io/js/vue-xstate)
+
 # vue-xstate
 
 This project aims to give users of VueJS a easy access platform to use [xState](https://xstate.js.org/) library in a easy manner.
