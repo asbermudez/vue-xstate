@@ -192,7 +192,7 @@ dispatch(action: TEvents): void
 yarn install
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies to /lib
 ```
 yarn run build
 ```
