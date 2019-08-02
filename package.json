@@ -17,7 +17,6 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "core-js": "^2.6.5",
     "rxjs": "^6.5.2",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
@@ -32,6 +31,7 @@
     "@vue/cli-plugin-unit-jest": "^3.9.0",
     "@vue/cli-service": "^3.9.0",
     "@vue/test-utils": "1.0.0-beta.29",
+    "core-js": "^2.6.5",
     "babel-core": "7.0.0-bridge.0",
     "ts-jest": "^23.0.0",
     "tsc": "^1.20150623.0",
