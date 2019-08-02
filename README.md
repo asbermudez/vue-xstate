@@ -2,7 +2,7 @@
 
 # vue-xstate
 
-This project aims to give users of VueJS a easy access platform to use [xState](https://xstate.js.org/) library in a easy manner.
+This project aims to give users of VueJS a easy access platform to use [xState](https://xstate.js.org/) library in their project.
 
 If you're not familiar with **xState** check first their site before using this! 
 
