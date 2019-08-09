@@ -4,7 +4,7 @@
   "description": "xState implementation for VueJS as Mixin",
   "author": "Aram Sabatés Bermúdez",
   "scripts": {
-    "build": "tsc -p tsconfig.prod.json && uglifyjs --compress --mangle --output lib/index.js  -- lib/index.js",
+    "build": "tsc -p tsconfig.prod.json",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postversion": "git push && git push --tags",
@@ -12,9 +12,10 @@
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint"
   },
-  "main": "lib/index.js",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "files": [
-    "lib/**/*"
+    "build/**/*"
   ],
   "dependencies": {
     "rxjs": "^6.5.2",
@@ -31,12 +32,11 @@
     "@vue/cli-plugin-unit-jest": "^3.9.0",
     "@vue/cli-service": "^3.9.0",
     "@vue/test-utils": "1.0.0-beta.29",
-    "core-js": "^2.6.5",
     "babel-core": "7.0.0-bridge.0",
+    "core-js": "^2.6.5",
     "ts-jest": "^23.0.0",
     "tsc": "^1.20150623.0",
     "typescript": "^3.4.3",
-    "uglify-es": "^3.3.9",
     "vue-template-compiler": "^2.6.10"
   },
   "homepage": "https://github.com/asbermudez/vue-xstate",
@@ -49,6 +49,5 @@
     "mixins"
   ],
   "license": "MIT",
-  "repository": "https://github.com/asbermudez/vue-xstate",
-  "types": "lib/index.d.ts"
+  "repository": "https://github.com/asbermudez/vue-xstate"
 }
