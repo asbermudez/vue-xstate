@@ -1,4 +1,4 @@
-import xStateMixin from '../../src/index';
+import xStateMixin from '../../src';
 import { MachineConfig, MachineOptions, interpret } from 'xstate';
 import { Subject } from 'rxjs';
 

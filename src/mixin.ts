@@ -14,7 +14,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import { StateMachineStateName, StateMachineProviderChange } from './types';
 
 @Component
-export default class XState<TContext, TStateSchema extends StateSchema, TEvents extends EventObject> extends Vue {
+export default class XStateMixin<TContext, TStateSchema extends StateSchema, TEvents extends EventObject> extends Vue {
     @Prop()
     public channel?: Subject<TEvents>;
 
