@@ -1,6 +1,6 @@
 {
   "name": "vue-xstate",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "xState implementation for VueJS as Mixin",
   "author": "Aram Sabatés Bermúdez",
   "scripts": {
