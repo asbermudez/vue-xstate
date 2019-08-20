@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import {
     EventObject,
     StateSchema,
@@ -10,7 +11,7 @@ import {
 } from 'xstate';
 import { v4 } from 'uuid';
 import { Subject, Subscription } from 'rxjs';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { StateMachineStateName, StateMachineProviderChange } from './types';
 
 @Component
