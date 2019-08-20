@@ -32,7 +32,7 @@ Here is an example state machine file:
 ```ts
 /// traffic-light.machine.ts
 
-import { MachineConfig, MachineOptions, StateNodeConfig } from 'xstate';
+import { MachineConfig, StateNodeConfig } from 'xstate';
 import { assign } from 'xstate/lib/actions';
 
 // State machine context interface
@@ -49,79 +49,79 @@ export const TrafficLigtInitialContext: TrafficLightContext = {
 
 // Possible states of the machine
 export enum TrafficLightStates {
-  RED = 'RED',
-  AMBER = 'AMBER',
-  GREEN = 'GREEN'
+    RED = 'RED',
+    AMBER = 'AMBER',
+    GREEN = 'GREEN'
 }
 
 // Possible actions of the whole machine
 export enum TrafficLightActions {
-  GO_GREEN = 'GO_GREEN',
-  GO_AMBER = 'GO_AMBER'
-  GO_RED = 'GO_RED'
-  COUNT_CAR = 'COUNT_CAR',
-  FINE_CAR = 'FINE_CAR'
+    GO_GREEN = 'GO_GREEN',
+    GO_AMBER = 'GO_AMBER',
+    GO_RED = 'GO_RED',
+    COUNT_CAR = 'COUNT_CAR',
+    FINE_CAR = 'FINE_CAR'
 }
 
 // Utility interface to get proper types on our config
 export interface TrafficLightSchema {
-  states: {
-    [state in TrafficLightStates]: StateNodeConfig<
-      TrafficLightContext, 
-      TrafficLightStateSchema, 
-      TrafficLightEvent
-    >;
-  }
+    states: {
+        [state in TrafficLightStates]: StateNodeConfig<
+            TrafficLightContext,
+            TrafficLightSchema,
+            TrafficLightEvent
+        >;
+    }
 }
 
 // Events that will be sent on the dispatch with their payload definition
 export type TrafficLightEvent =
-  | { type: TrafficLightActions.GO_GREEN }
-  | { type: TrafficLightActions.GO_AMBER }
-  | { type: TrafficLightActions.GO_RED }
-  | { type: TrafficLightActions.COUNT_CAR }
-  | { type: TrafficLightActions.FINE_CAR, plate: string };
+    | { type: TrafficLightActions.GO_GREEN }
+    | { type: TrafficLightActions.GO_AMBER }
+    | { type: TrafficLightActions.GO_RED }
+    | { type: TrafficLightActions.COUNT_CAR }
+    | { type: TrafficLightActions.FINE_CAR, plate: string };
 
 // Definition of the state machine
 export const TrafficLightMachineConfig: MachineConfig<
-  TrafficLightContext,
-  TrafficLightStateSchema,
-  TrafficLightEvent
+    TrafficLightContext,
+    TrafficLightSchema,
+    TrafficLightEvent
 > = {
-  initial: TrafficLightStates.RED,
-  states: {
-    [TrafficLightStates.RED]: {
-      on: {
-        [TrafficLightActions.GO_GREEN]: {
-          target: TrafficLightStates.GREEN
+    initial: TrafficLightStates.RED,
+    states: {
+        [TrafficLightStates.RED]: {
+            on: {
+                [TrafficLightActions.GO_GREEN]: {
+                    target: TrafficLightStates.GREEN
+                },
+                [TrafficLightActions.FINE_CAR]: {
+                    actions: assign((ctx, event) => ({
+                        finedPlates: [...ctx.finedPlates, event.plate]
+                    }))
+                }
+            }
         },
-        [TrafficLightActions.FINE_CAR]: {
-          actions: assign((ctx, event) => ({
-            finedPlates: [...ctx.finedPlates, event.plate]
-          }))
-        }
-      }
-    },
-    [TrafficLightStates.AMBER]: {
-      on: {
-        [TrafficLightActions.GO_RED]: {
-          target: TrafficLightStates.RED
-        }
-      }
-    },
-    [TrafficLightStates.GREEN]: {
-      on: {
-        [TrafficLightActions.GO_AMBER]: {
-          target: TrafficLightStates.AMBER
+        [TrafficLightStates.AMBER]: {
+            on: {
+                [TrafficLightActions.GO_RED]: {
+                    target: TrafficLightStates.RED
+                }
+            }
         },
-        [TrafficLightActions.COUNT_CAR]: {
-          actions: assign((ctx, event) => ({
-            carCount: ctx.carCount + 1;
-          }))
+        [TrafficLightStates.GREEN]: {
+            on: {
+                [TrafficLightActions.GO_AMBER]: {
+                    target: TrafficLightStates.AMBER
+                },
+                [TrafficLightActions.COUNT_CAR]: {
+                    actions: assign((ctx, event) => ({
+                        carCount: ctx.carCount + 1
+                    }))
+                }
+            }
         }
-      }
     }
-  }
 };
 
 ```
