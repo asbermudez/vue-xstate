@@ -1,5 +1,7 @@
 [![npm version](https://badge.fury.io/js/vue-xstate.svg)](https://badge.fury.io/js/vue-xstate)
 
+### :warning: Attention: If you're under version 1.0.10, please upgrade by first removing totally the package and reinstalling :warning:
+
 # vue-xstate
 
 This project aims to give users of VueJS a easy access platform to use [xState](https://xstate.js.org/) library in their project.
