@@ -11,12 +11,15 @@ import {
 } from 'xstate';
 import { v4 } from 'uuid';
 import { Subject, Subscription } from 'rxjs';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { StateMachineStateName, StateMachineProviderChange } from './types';
 
-@Component
+@Component({
+    props: ['channel'] // Using the component definition for now, issue explained under here.
+})
 export default class XStateMixin<TContext, TStateSchema extends StateSchema, TEvents extends EventObject> extends Vue {
-    @Prop()
+    // @Prop() -- Using the component definition for now because of the typing issues related to 
+    //            the vue-property decorator
     public channel?: Subject<TEvents>;
 
     public context: TContext = {} as TContext;
