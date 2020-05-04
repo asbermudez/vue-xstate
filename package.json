@@ -4,7 +4,7 @@
   "description": "xState implementation for VueJS as Mixin",
   "author": "Aram Sabatés Bermúdez",
   "scripts": {
-    "build": "parcel build src/index.ts --out-dir lib/ && tsc --emitDeclarationOnly true",
+    "build": "parcel build src/index.ts --out-dir lib/ --no-source-maps && tsc --emitDeclarationOnly true",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postversion": "git push && git push --tags",
