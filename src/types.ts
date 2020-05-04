@@ -1,4 +1,4 @@
-import { StateSchema, EventObject } from 'xstate';
+import { StateSchema } from 'xstate';
 
 export type StateMachineStateName<T extends StateSchema> = keyof T['states'];
 

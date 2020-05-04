@@ -18,21 +18,21 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
 
   public stateHash: string = v4();
 
-  private machine: StateNode<TState, TStateSchema, TEvents>;
+  private $machine: StateNode<TState, TStateSchema, TEvents>;
 
-  private interpreter: Interpreter<TState, TStateSchema, TEvents>;
+  private $interpreter: Interpreter<TState, TStateSchema, TEvents>;
 
   constructor(
     initialContext: TState,
     machineConfig: MachineConfig<TState, TStateSchema, TEvents>,
     configOptions: Partial<MachineOptions<TState, TEvents>> = {},
   ) {
-    this.machine = Machine<TState, TStateSchema, TEvents>(machineConfig, {}, initialContext).withConfig(configOptions);
-    this.interpreter = interpret<TState, TStateSchema, TEvents>(this.machine);
+    this.$machine = Machine<TState, TStateSchema, TEvents>(machineConfig, {}, initialContext).withConfig(configOptions);
+    this.$interpreter = interpret<TState, TStateSchema, TEvents>(this.$machine);
 
     this.onChange({
-      currentState: this.machine.initialState.value as StateMachineStateName<TStateSchema>,
-      context: this.machine.context,
+      currentState: this.$machine.initialState.value as StateMachineStateName<TStateSchema>,
+      context: this.$machine.context,
       stateHash: v4(),
     });
 
@@ -40,7 +40,7 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
   }
 
   public dispatch(action: TEvents): void {
-    this.interpreter.send(action);
+    this.$interpreter.send(action);
   }
 
   private onChange(change: StateMachineProviderChange<TState, TStateSchema>): void {
@@ -52,9 +52,9 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
   }
 
   private startInterpreter(): void {
-    this.interpreter.start();
+    this.$interpreter.start();
 
-    this.interpreter.onTransition(newState => {
+    this.$interpreter.onTransition((newState) => {
       const { changed, value, context } = newState;
 
       if (changed && value !== this.stateName) {
@@ -66,7 +66,7 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
       }
     });
 
-    this.interpreter.onChange(context => {
+    this.$interpreter.onChange((context) => {
       if (context !== this.state) {
         this.onChange({
           context,

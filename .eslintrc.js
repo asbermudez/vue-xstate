@@ -4,7 +4,7 @@ module.exports = {
   extends: ['plugin:vue/essential', '@vue/airbnb', '@vue/typescript/recommended'],
   parserOptions: { ecmaVersion: 2020 },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? ['error', { allow: ['error', 'warn'] }] : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'import/prefer-default-export': 0,
     // https://stackoverflow.com/a/55863857
@@ -30,7 +30,7 @@ module.exports = {
     'object-curly-newline': ['error', { multiline: true }],
     'function-paren-newline': 0,
     'implicit-arrow-linebreak': 0,
-    'arrow-parens': ['error', 'as-needed'],
+    'arrow-parens': ['error', 'always'],
     '@typescript-eslint/no-inferrable-types': 0,
     'operator-linebreak': ['error', 'after', { overrides: { '?': 'before', ':': 'before' } }],
   },
