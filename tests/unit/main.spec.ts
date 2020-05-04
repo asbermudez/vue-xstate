@@ -1,5 +1,4 @@
 import { MachineConfig, MachineOptions, interpret, createMachine } from 'xstate';
-import { Subject } from 'rxjs';
 import { StateMachine } from '../../src/index';
 
 jest.mock('xstate', () => ({
