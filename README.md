@@ -1,36 +1,73 @@
 [![npm version](https://badge.fury.io/js/vue-xstate.svg)](https://badge.fury.io/js/vue-xstate)
 
-### :warning: Attention: If you're under version 1.0.10, please upgrade by first removing totally the package and reinstalling :warning:
+### :warning: Attention: [Documentation about v1.x.x is here](README-v1.md) :warning:
 
-# vue-xstate
+# vue-xstate v2
 
 This project aims to give users of VueJS a easy access platform to use [xState](https://xstate.js.org/) library in their project.
 
-If you're not familiar with **xState** check first their site before using this! 
+If you're not familiar with **xState** check first their site before using this!
 
-The project uses [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator) (and through it [vue-class-component](https://github.com/vuejs/vue-class-component)) and its `Mixin` decorator to provide a nicely typed solution. This decision was made as VueJS is officially moving towards working with classes instead of object initializers.
-If there's enough demand I will consider adding a non-typed equivalent **mixin**.
-Many thanks to [@kaorun343](https://github.com/kaorun343/) for his decorators!!
+## Why no longer a mixin?
 
-## Licence
-MIT License
+In this version I've moved away from the **mixin** structure for three reasons:
+
+1. It adds a lot of overhead
+2. It's being considered a bad practice as it does merge properties in runtime and you can accidentally overlap them without warning.
+3. In mixin form the instance of the machine was mandatory to be linked to the component, having to make use of strange subscriptions to share it through
+
+With the new approach of a class it can be explicitly initialized, doesn't overwrite any property and it can be instantiated anywhere and shared through props/imports. This also adds an extra benefit, this class can now be used in other projects that don't use vue.
+
+## Migration from v1
+
+To migrate your components from v1, you need to remove the mixin from it and the initialization of the machine from your **created()** hook. To simplify a bit your work, you can add this piece of code in your component to have a map of your data to the new machine.
+
+Note that the subscription system has now been removed as now being a class you can initiate, it can be passed as a property and shared the instance through multiple components.
+
+You will have to replace the types with the ones on your state machine
+
+```ts
+public machine: StateMachine<TContext, TStateSchema, TEvents> = new StateMachine(initialContext, machineConfig);
+
+public get context(): TContext {
+  return this.machine.context;
+}
+
+public get currentState(): StateMachineStateName<TStateSchema> {
+  return this.machine.state;
+}
+
+public get stateHash(): StateMachineStateName<TStateSchema> {
+  return this.machine.stateHash;
+}
+
+public dispatch(action: TEvents): void {
+  this.machine.dispatch(action);
+}
+```
+
+# Usage
 
 ## Install
+
 ```
 yarn add vue-xstate
 ```
+
 or
+
 ```
 npm i vue-xstate
 ```
 
 ## Create your state machine
+
 Using the documentation of [XState](https://xstate.js.org/docs/), define your context, states, events and state machine. For this case you will only define the objects, you don't need to use any of the methods indicated in that documentation as the mixin takes care of all internally.
 
 I do recommend to keep the types and the machine in a separated file to make it easier to read and maintain. I also recommend to follow the nomenclature pattern. In the future I will try to add a small scaffolding tool to use with npm to generate the base files and types.
 
-
 Here is an example state machine file:
+
 ```ts
 /// traffic-light.machine.ts
 
@@ -39,147 +76,156 @@ import { assign } from 'xstate/lib/actions';
 
 // State machine context interface
 export interface TrafficLightContext {
-    carCount: number,
-    finedPlates: string[]
+  carCount: number;
+  finedPlates: string[];
 }
 
 // Initial context used in the xStateInit() method
 export const TrafficLigtInitialContext: TrafficLightContext = {
-    carCount: 0,
-    finedPlates: []
+  carCount: 0,
+  finedPlates: [],
 };
 
 // Possible states of the machine
 export enum TrafficLightStates {
-    RED = 'RED',
-    AMBER = 'AMBER',
-    GREEN = 'GREEN'
+  RED = 'RED',
+  AMBER = 'AMBER',
+  GREEN = 'GREEN',
 }
 
 // Possible actions of the whole machine
 export enum TrafficLightActions {
-    GO_GREEN = 'GO_GREEN',
-    GO_AMBER = 'GO_AMBER',
-    GO_RED = 'GO_RED',
-    COUNT_CAR = 'COUNT_CAR',
-    FINE_CAR = 'FINE_CAR'
+  GO_GREEN = 'GO_GREEN',
+  GO_AMBER = 'GO_AMBER',
+  GO_RED = 'GO_RED',
+  COUNT_CAR = 'COUNT_CAR',
+  FINE_CAR = 'FINE_CAR',
 }
 
 // Utility interface to get proper types on our config
 export interface TrafficLightSchema {
-    states: {
-        [state in TrafficLightStates]: StateNodeConfig<
-            TrafficLightContext,
-            TrafficLightSchema,
-            TrafficLightEvent
-        >;
-    }
+  states: {
+    [state in TrafficLightStates]: StateNodeConfig<TrafficLightContext, TrafficLightSchema, TrafficLightEvent>;
+  };
 }
 
 // Events that will be sent on the dispatch with their payload definition
 export type TrafficLightEvent =
-    | { type: TrafficLightActions.GO_GREEN }
-    | { type: TrafficLightActions.GO_AMBER }
-    | { type: TrafficLightActions.GO_RED }
-    | { type: TrafficLightActions.COUNT_CAR }
-    | { type: TrafficLightActions.FINE_CAR, plate: string };
+  | { type: TrafficLightActions.GO_GREEN }
+  | { type: TrafficLightActions.GO_AMBER }
+  | { type: TrafficLightActions.GO_RED }
+  | { type: TrafficLightActions.COUNT_CAR }
+  | { type: TrafficLightActions.FINE_CAR; plate: string };
 
 // Definition of the state machine
-export const TrafficLightMachineConfig: MachineConfig<
-    TrafficLightContext,
-    TrafficLightSchema,
-    TrafficLightEvent
-> = {
-    initial: TrafficLightStates.RED,
-    states: {
-        [TrafficLightStates.RED]: {
-            on: {
-                [TrafficLightActions.GO_GREEN]: {
-                    target: TrafficLightStates.GREEN
-                },
-                [TrafficLightActions.FINE_CAR]: {
-                    actions: assign((ctx, event) => ({
-                        finedPlates: [...ctx.finedPlates, event.plate]
-                    }))
-                }
-            }
+export const TrafficLightMachineConfig: MachineConfig<TrafficLightContext, TrafficLightSchema, TrafficLightEvent> = {
+  initial: TrafficLightStates.RED,
+  states: {
+    [TrafficLightStates.RED]: {
+      on: {
+        [TrafficLightActions.GO_GREEN]: {
+          target: TrafficLightStates.GREEN,
         },
-        [TrafficLightStates.AMBER]: {
-            on: {
-                [TrafficLightActions.GO_RED]: {
-                    target: TrafficLightStates.RED
-                }
-            }
+        [TrafficLightActions.FINE_CAR]: {
+          actions: assign((ctx, event) => ({
+            finedPlates: [...ctx.finedPlates, event.plate],
+          })),
         },
-        [TrafficLightStates.GREEN]: {
-            on: {
-                [TrafficLightActions.GO_AMBER]: {
-                    target: TrafficLightStates.AMBER
-                },
-                [TrafficLightActions.COUNT_CAR]: {
-                    actions: assign((ctx, event) => ({
-                        carCount: ctx.carCount + 1
-                    }))
-                }
-            }
-        }
-    }
+      },
+    },
+    [TrafficLightStates.AMBER]: {
+      on: {
+        [TrafficLightActions.GO_RED]: {
+          target: TrafficLightStates.RED,
+        },
+      },
+    },
+    [TrafficLightStates.GREEN]: {
+      on: {
+        [TrafficLightActions.GO_AMBER]: {
+          target: TrafficLightStates.AMBER,
+        },
+        [TrafficLightActions.COUNT_CAR]: {
+          actions: assign((ctx, event) => ({
+            carCount: ctx.carCount + 1,
+          })),
+        },
+      },
+    },
+  },
 };
-
 ```
+
 Remember that in the machine configuration you can use any functionality provided by **xState**
 
-## Usage
+## Initiate the machine in your component
+
 Once you have your class component created do the following:
+
 ```ts
-import XStateMixin from 'vue-xstate';
-import { Mixin } from 'vue-property-decorator';
-// or if you're only using vue-class-component 
-// import { mixins } from 'vue-class-component'';
-import { TrafficLightContext, TrafficLightStateSchema, TrafficLightEvents } from './TrafficLight.machine.ts';
+import { Component, Vue } from 'vue-property-decorator';
+import { StateMachine } from 'vue-xstate';
+import {
+  TrafficLightContext,
+  TrafficLightStateSchema,
+  TrafficLightEvents,
+  TrafficLigtInitialContext,
+  TrafficLightMachineConfig,
+} from './TrafficLight.machine.ts';
 
 @Component
-class TrafficLight extends Mixin<XStateMixin<TrafficLightContext, TrafficLightStateSchema, TrafficLightEvents>>(XStateMixin) {
-    // Your class definition
+class TrafficLight extends Vue {
+  // Your class definition
+  readonly machine: StateMachine<TrafficLightContext, TrafficLightStateSchema, TrafficLightEvents> = new StateMachine(
+    TrafficLigtInitialContext,
+    TrafficLightMachineConfig,
+  );
 }
 ```
 
-## Mixin accessors
-Now that you have the mixin in your class you will have access to the following data, methods and props:
+This will create and initiate the state machine with the defined initial state. Then you can use the _StateMachine_ properties and methods to render and operate your machine.
+All the properties are reactive in the normal vue flow, which allows you to use them directly in your template/methods.
 
-### Props
-| Name | Type | Optional | Description |
-|------|------|----------|-------------|
-| channel | `Subject<TEvents>` | `true`  |  Allows to pass a RxJS subject to trigger actions to the machine from the outside the component |
+# Documentation
+
+## StateMachine class
+
+Now that you have machine initialized, you will have access to the following data, methods and props:
 
 ### Data
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| context | `TContext` | `{}` |  Contain the context of the state machine,   it will change as you move through the actions |
-| currentState | `string` | `''`  | Current state name based on your `StateSchema` definition |
-| statehash | `string` | uuid v4 hash | State hash will provide a unique UUID every time there's a state change in the state machine | 
+All the properties listed here are getter to prevent you to accidentally modify them. In any case you should always observe the principle of immutability when designing your states.
+
+| Name      | Type       | Description                                                                                  |
+| --------- | ---------- | -------------------------------------------------------------------------------------------- |
+| context   | `TContext` | Contain the context of the state machine, it will change as you move through the actions     |
+| state     | `string`   | Current state name based on your `StateSchema` definition                                    |
+| stateHash | `string`   | State hash will provide a unique UUID every time there's a state change in the state machine |
 
 ### Methods
-#### xStateInit() :exclamation:
-This method initialize the state machine, it's **mandatory** and must be run on the `created()` hook to ensure that everything works
+
+#### constructor()
+
+The constructor method initialize the state machine.
 
 ```ts
-xStateInit(
-    initialContext: TContext, 
-    machineConfig: MachineConfig<TContext, TStateSchema, TEvents>, 
+new StateMachine(
+    initialContext: TContext,
+    machineConfig: MachineConfig<TContext, TStateSchema, TEvents>,
     configOptions?: Partial<MachineOptions<TContext, TEvents>>
-): void
+)
 ```
 
 ##### Method params
-| Name | Type | Optional | Description |
-|------|------|----------|-------------|
-| initialContext | `TContext` | `false`  |  Initial context that will be accessible through `context` data |
-| machineConfig | `MachineConfig<TContext, TStateSchema, TEvents>` | `false`  | xState machine configuration [here](https://xstate.js.org/api/interfaces/machineconfig.html) |
-| configOptions | `Partial<MachineOptions<TContext, TEvents>` | `true`  | xState machine options [here](https://xstate.js.org/api/interfaces/machineoptions.html) |
+
+| Name           | Type                                             | Optional | Description                                                                                  |
+| -------------- | ------------------------------------------------ | -------- | -------------------------------------------------------------------------------------------- |
+| initialContext | `TContext`                                       | `false`  | Initial context that will be accessible through `context` data                               |
+| machineConfig  | `MachineConfig<TContext, TStateSchema, TEvents>` | `false`  | xState machine configuration [here](https://xstate.js.org/api/interfaces/machineconfig.html) |
+| configOptions  | `Partial<MachineOptions<TContext, TEvents>`      | `true`   | xState machine options [here](https://xstate.js.org/api/interfaces/machineoptions.html)      |
 
 #### dispatch()
+
 This method allows to dispatch events to the state machine
 
 ```ts
@@ -187,26 +233,35 @@ dispatch(action: TEvents): void
 ```
 
 ##### Method params
-| Name | Type | Description |
-|------|------|-------------|
-| action | `TEvents` |  Action object with its payload |
+
+| Name   | Type      | Description                    |
+| ------ | --------- | ------------------------------ |
+| action | `TEvents` | Action object with its payload |
 
 # For forkers
+
 ```
 yarn install
 ```
 
 ### Compiles and minifies to /lib
+
 ```
 yarn run build
 ```
 
 ### Run unit tests
+
 ```
 yarn run test
 ```
 
 ### Lints and fixes files
+
 ```
 yarn run lint
 ```
+
+# Licence
+
+MIT License
