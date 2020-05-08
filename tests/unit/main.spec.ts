@@ -36,9 +36,9 @@ describe('XStateMixin', () => {
       const machine = new StateMachine(mockInitialContext, mockConfig, mockOptions);
 
       // THEN
-      expect(machine.state).toBe(mockInitialContext);
+      expect(machine.context).toBe(mockInitialContext);
       expect(machine.stateHash).not.toBe('');
-      expect(machine.stateName).toBe('mockState');
+      expect(machine.state).toBe('mockState');
       expect(mockInterpret.onChange).toHaveBeenCalled();
       expect(mockInterpret.onTransition).toHaveBeenCalled();
     });

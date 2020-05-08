@@ -11,24 +11,38 @@ import {
 import { v4 } from 'uuid';
 import { StateMachineStateName, StateMachineProviderChange } from './types';
 
-export class StateMachine<TState, TStateSchema extends StateSchema, TEvents extends EventObject> {
-  public state: TState = {} as TState;
+export class StateMachine<TContext, TStateSchema extends StateSchema, TEvents extends EventObject> {
+  private $context: TContext = {} as TContext;
 
-  public stateName: StateMachineStateName<TStateSchema> = '' as StateMachineStateName<TStateSchema>;
+  public $state: StateMachineStateName<TStateSchema> = '' as StateMachineStateName<TStateSchema>;
 
-  public stateHash: string = v4();
+  public $stateHash: string = v4();
 
-  private $machine: StateNode<TState, TStateSchema, TEvents>;
+  private $machine: StateNode<TContext, TStateSchema, TEvents>;
 
-  private $interpreter: Interpreter<TState, TStateSchema, TEvents>;
+  private $interpreter: Interpreter<TContext, TStateSchema, TEvents>;
+
+  public get context(): TContext {
+    return this.$context;
+  }
+
+  public get state(): StateMachineStateName<TStateSchema> {
+    return this.$state;
+  }
+
+  public get stateHash(): string {
+    return this.$stateHash;
+  }
 
   constructor(
-    initialContext: TState,
-    machineConfig: MachineConfig<TState, TStateSchema, TEvents>,
-    configOptions: Partial<MachineOptions<TState, TEvents>> = {},
+    initialContext: TContext,
+    machineConfig: MachineConfig<TContext, TStateSchema, TEvents>,
+    configOptions: Partial<MachineOptions<TContext, TEvents>> = {},
   ) {
-    this.$machine = Machine<TState, TStateSchema, TEvents>(machineConfig, {}, initialContext).withConfig(configOptions);
-    this.$interpreter = interpret<TState, TStateSchema, TEvents>(this.$machine);
+    this.$machine = Machine<TContext, TStateSchema, TEvents>(machineConfig, {}, initialContext).withConfig(
+      configOptions,
+    );
+    this.$interpreter = interpret<TContext, TStateSchema, TEvents>(this.$machine);
 
     this.onChange({
       currentState: this.$machine.initialState.value as StateMachineStateName<TStateSchema>,
@@ -43,12 +57,12 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
     this.$interpreter.send(action);
   }
 
-  private onChange(change: StateMachineProviderChange<TState, TStateSchema>): void {
-    const { currentState = this.stateName, context = this.state, stateHash } = change;
+  private onChange(change: StateMachineProviderChange<TContext, TStateSchema>): void {
+    const { currentState = this.state, context = this.context, stateHash } = change;
 
-    this.stateName = currentState;
-    this.state = context;
-    this.stateHash = stateHash;
+    this.$state = currentState;
+    this.$context = context;
+    this.$stateHash = stateHash;
   }
 
   private startInterpreter(): void {
@@ -57,7 +71,7 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
     this.$interpreter.onTransition((newState) => {
       const { changed, value, context } = newState;
 
-      if (changed && value !== this.stateName) {
+      if (changed && value !== this.state) {
         this.onChange({
           currentState: value as StateMachineStateName<StateSchema>,
           context,
@@ -67,7 +81,7 @@ export class StateMachine<TState, TStateSchema extends StateSchema, TEvents exte
     });
 
     this.$interpreter.onChange((context) => {
-      if (context !== this.state) {
+      if (context !== this.context) {
         this.onChange({
           context,
           stateHash: v4(),
