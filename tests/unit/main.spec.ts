@@ -1,87 +1,62 @@
-import xStateMixin from '../../src';
-import { MachineConfig, MachineOptions, interpret } from 'xstate';
-import { Subject } from 'rxjs';
+import { MachineConfig, MachineOptions, interpret, createMachine } from 'xstate';
+import { StateMachine } from '../../src/index';
 
 jest.mock('xstate', () => ({
-    Machine: jest.fn().mockImplementation((a: any, b: any, initialContext: any) => ({
-        withConfig: jest.fn().mockReturnValue({
-            context: initialContext,
-            initialState: { value: 'mockState' }
-        })
-    })),
-    interpret: jest.fn().mockReturnValue({
-        onChange: jest.fn(),
-        onTransition: jest.fn(),
-        send: jest.fn(),
-        start: jest.fn()
-    })
+  Machine: jest.fn().mockImplementation((a: {}, b: {}, initialContext: {}) => ({
+    withConfig: jest.fn().mockReturnValue({
+      context: initialContext,
+      initialState: { value: 'mockState' },
+    }),
+  })),
+  interpret: jest.fn().mockReturnValue({
+    onChange: jest.fn(),
+    onTransition: jest.fn(),
+    send: jest.fn(),
+    start: jest.fn(),
+  }),
+  createMachine: jest.fn(),
 }));
 
-describe('xStateMixin', () => {
-    interface MockEvent { type: 'mock'; }
-    const mockEvent: MockEvent = { type: 'mock' };
-    let mixin: xStateMixin<{}, {}, MockEvent>;
+describe('XStateMixin', () => {
+  interface MockEvent {
+    type: 'mock';
+  }
+  const mockMachine = createMachine({ id: 'mock', initial: 'some', states: { some: {} } });
+  const mockInterpret = interpret(mockMachine);
+  const mockEvent: MockEvent = { type: 'mock' };
 
-    describe('xStateInit', () => {
-        beforeEach(() => {
-            mixin = new xStateMixin();
-        });
+  describe('constructor', () => {
+    it('should set the machine and initialize state and hash', () => {
+      // GIVEN
+      const mockInitialContext = {};
+      const mockConfig = { context: mockInitialContext } as MachineConfig<{}, {}, MockEvent>;
+      const mockOptions = {} as MachineOptions<{}, MockEvent>;
 
-        it('should set the machine and initialize state and hash', () => {
-            // GIVEN
-            const initialHash = mixin.stateHash;
-            const mockInitialContext = {};
-            const mockConfig = { context: mockInitialContext } as MachineConfig<{}, {}, MockEvent>;
-            const mockOptions = {} as MachineOptions<{}, MockEvent>;
+      // WHEN
+      const machine = new StateMachine(mockInitialContext, mockConfig, mockOptions);
 
-            // WHEN
-            mixin.xStateInit(mockInitialContext, mockConfig, mockOptions);
-
-            // THEN
-            expect(mixin.context).toBe(mockInitialContext);
-            expect(mixin.stateHash).not.toBe(initialHash);
-            expect(mixin.currentState).toBe('mockState');
-            expect(interpret({} as any).onChange).toHaveBeenCalled();
-            expect(interpret({} as any).onTransition).toHaveBeenCalled();
-        });
-
-        it('should set the subscription if channel is set in prop', () => {
-            // GIVEN
-            const mockChannel = new Subject<MockEvent>();
-            const subscribeSpy = jest.spyOn(mockChannel, 'subscribe');
-            mixin.channel = mockChannel;
-            const mockInitialContext = {};
-            const mockConfig = { context: mockInitialContext } as MachineConfig<{}, {}, MockEvent>;
-            const mockOptions = {} as MachineOptions<{}, MockEvent>;
-
-            // WHEN
-            mixin.xStateInit(mockInitialContext, mockConfig, mockOptions);
-            mockChannel.next(mockEvent);
-
-            // THEN
-            expect(subscribeSpy).toHaveBeenCalled();
-            expect(interpret({} as any).send).toHaveBeenCalledWith(mockEvent);
-        });
+      // THEN
+      expect(machine.context).toBe(mockInitialContext);
+      expect(machine.stateHash).not.toBe('');
+      expect(machine.state).toBe('mockState');
+      expect(mockInterpret.onChange).toHaveBeenCalled();
+      expect(mockInterpret.onTransition).toHaveBeenCalled();
     });
+  });
 
-    describe('dispatch', () => {
-        beforeEach(() => {
-            mixin = new xStateMixin();
-            const mockInitialContext = {};
-            const mockConfig = { context: mockInitialContext } as MachineConfig<{}, {}, MockEvent>;
-            const mockOptions = {} as MachineOptions<{}, MockEvent>;
-            mixin.xStateInit(mockInitialContext, mockConfig, mockOptions);
-        });
+  describe('dispatch', () => {
+    it('should trigger interpreter send when called', () => {
+      // GIVEN
+      const mockInitialContext = {};
+      const mockConfig = { context: mockInitialContext } as MachineConfig<{}, {}, MockEvent>;
+      const mockOptions = {} as MachineOptions<{}, MockEvent>;
+      const machine = new StateMachine(mockInitialContext, mockConfig, mockOptions);
 
-        it('should trigger interpreter send when called', () => {
-            // GIVEN
-            const sendSpy = interpret({} as any).send;
+      // WHEN
+      machine.dispatch(mockEvent);
 
-            // WHEN
-            mixin.dispatch(mockEvent);
-
-            // THEN
-            expect(sendSpy).toHaveBeenCalledWith(mockEvent);
-        });
+      // THEN
+      expect(mockInterpret.send).toHaveBeenCalledWith(mockEvent);
     });
+  });
 });

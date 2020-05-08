@@ -1,13 +1,9 @@
-import { StateSchema, EventObject } from 'xstate';
+import { StateSchema } from 'xstate';
 
 export type StateMachineStateName<T extends StateSchema> = keyof T['states'];
 
-export interface StateMachineAction<T> extends EventObject {
-    data: Partial<T>;
-}
-
 export interface StateMachineProviderChange<TContext, TStateSchema extends StateSchema> {
-    context?: TContext;
-    currentState?: StateMachineStateName<TStateSchema>;
-    stateHash: string;
+  context?: TContext;
+  currentState?: StateMachineStateName<TStateSchema>;
+  stateHash: string;
 }
