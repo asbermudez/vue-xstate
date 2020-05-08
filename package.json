@@ -4,7 +4,9 @@
   "description": "xState implementation for VueJS as Mixin",
   "author": "Aram Sabatés Bermúdez",
   "scripts": {
-    "build": "vue-cli-service build --target lib --formats commonjs src/index.ts --filename index && yarn rename && tsc --emitDeclarationOnly true",
+    "build": "yarn build:js && yarn build:declarations",
+    "build:js": "vue-cli-service build --target lib --formats commonjs src/index.ts --filename index && yarn rename",
+    "build:declarations": "tsc --emitDeclarationOnly true --declaration true",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "rename": "mv dist/index.common.js dist/index.js && mv dist/index.common.js.map dist/index.js.map",
@@ -19,9 +21,6 @@
   ],
   "dependencies": {
     "uuid": "^7.0.3",
-    "vue": "^2.6.11",
-    "vue-class-component": "^7.2.3",
-    "vue-property-decorator": "^8.4.2",
     "xstate": "^4.9.1"
   },
   "peerDependencies": {
