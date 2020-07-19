@@ -240,6 +240,21 @@ dispatch(action: TEvents): void
 | ------ | --------- | ------------------------------ |
 | action | `TEvents` | Action object with its payload |
 
+# Changelog
+
+## 2.1.2
+
+- Removed js maps from build to thin the package
+
+## 2.1.1
+
+- Updated documentation
+
+## 2.1.0
+
+- Removed unnecessary dependecies
+- Turned xstate to a peer dependency
+
 # For forkers
 
 ```
