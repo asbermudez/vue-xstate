@@ -12,11 +12,11 @@ import { v4 } from 'uuid';
 import { StateMachineStateName, StateMachineProviderChange } from './types';
 
 export class StateMachine<TContext, TStateSchema extends StateSchema, TEvents extends EventObject> {
-  private $context: TContext = {} as TContext;
-
   public $state: StateMachineStateName<TStateSchema> = '' as StateMachineStateName<TStateSchema>;
 
   public $stateHash: string = v4();
+
+  private $context: TContext = {} as TContext;
 
   private $machine: StateNode<TContext, TStateSchema, TEvents>;
 
