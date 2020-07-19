@@ -242,6 +242,11 @@ dispatch(action: TEvents): void
 
 # Changelog
 
+## 2.1.3
+
+- Security internal dependency lodash
+- Realizing I suck on handling versions
+
 ## 2.1.2
 
 - Removed js maps from build to thin the package
