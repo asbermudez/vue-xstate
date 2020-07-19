@@ -60,6 +60,8 @@ or
 npm i vue-xstate
 ```
 
+:warning: Remember, since version 2.1.0, xstate is a peer dependency and you will have to install it in your project to use with this library.
+
 ## Create your state machine
 
 Using the documentation of [XState](https://xstate.js.org/docs/), define your context, states, events and state machine. For this case you will only define the objects, you don't need to use any of the methods indicated in that documentation as the mixin takes care of all internally.
