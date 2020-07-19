@@ -9,7 +9,7 @@
     "build:declarations": "tsc --emitDeclarationOnly true --declaration true",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "rename": "mv dist/index.common.js dist/index.js && mv dist/index.common.js.map dist/index.js.map",
+    "rename": "mv dist/index.common.js dist/index.js",
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
