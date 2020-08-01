@@ -242,6 +242,10 @@ dispatch(action: TEvents): void
 
 # Changelog
 
+## 2.1.4
+
+- Bump elliptic dependency from 6.5.2 to 6.5.3 for a security issue
+
 ## 2.1.3
 
 - Security internal dependency lodash
