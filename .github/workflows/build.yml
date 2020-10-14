@@ -20,7 +20,7 @@ jobs:
 
       - uses: borales/actions-yarn@v2.0.0
         with:
-          cmd: test:unit # will run `yarn test` command
+          cmd: test # will run `yarn test` command
 
       - uses: borales/actions-yarn@v2.0.0
         with:
