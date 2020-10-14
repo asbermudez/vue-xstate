@@ -242,6 +242,10 @@ dispatch(action: TEvents): void
 
 # Changelog
 
+## 2.1.7
+
+- Removed parcel from dev dependencies
+
 ## 2.1.6
 
 - Bump packages for a security issue with node-forge
