@@ -242,6 +242,10 @@ dispatch(action: TEvents): void
 
 # Changelog
 
+## 2.1.8
+
+- Dependencies update for security reasons
+
 ## 2.1.7
 
 - Removed parcel from dev dependencies
