@@ -1,5 +1,6 @@
 [![npm version](https://badge.fury.io/js/vue-xstate.svg)](https://badge.fury.io/js/vue-xstate)
 
+### :warning: Attention: This repository is no longer mantained, use at your own risk! :warning:
 ### :warning: Attention: [Documentation about v1.x.x is here](README-v1.md) :warning:
 
 # vue-xstate v2
