@@ -20,7 +20,7 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "uuid": "^7.0.3"
+    "uuid": "^8.0.0"
   },
   "peerDependencies": {
     "xstate": "^4.9.x"
